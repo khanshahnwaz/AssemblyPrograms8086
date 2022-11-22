@@ -1,0 +1,112 @@
+.model SMALL
+.data
+msg1 DB 10,13,"Enter size of the array.$"
+arrSize DW ?
+msg2 DB 10,13,"Enter elements of the first array.$"
+msg3 DB 10,13,"Enter elements of the second array.$"
+msg4 DB 10,13,"Subtracted array is: $"
+arr1 DW 20 DUP(?)
+arr2 DW 20 DUP(?)
+
+.code 
+MAIN PROC
+
+MOV AX,@DATA
+MOV DS,AX
+
+;PROMPT user to enter size of the array.
+MOV AH,09
+LEA DX,msg1
+INT 21H
+
+MOV AH,01
+INT 21H
+CMP AL,'A'
+JGE C1
+SUB AL,30H
+JMP C2
+C1:SUB AL,37H
+C2:MOV AH,0
+MOV arrSize,AX
+;PROMP USER TO ENTER ELEMENTS OF THE ARRAY
+MOV AH,09
+LEA DX,msg2
+INT 21H
+
+
+
+;INPUT ELEMENTS OF THE FIRST ARRAY.
+LEA SI,arr1
+MOV CX,arrSize
+L1:MOV AH,01
+   INT 21H
+   CMP AL,'A'
+   JGE L2
+   SUB AL,30H
+   JMP L3
+   L2:SUB AL,37H
+   L3:MOV [SI],AL
+   INC SI
+   MOV AH,02
+   MOV DL,' '
+   INT 21H
+LOOP L1
+
+;PROMP USER TO ENTER ELEMENTS OF THE SECOND ARRAY
+MOV AH,09
+LEA DX,msg2
+INT 21H
+;INPUT ELEMENTS OF THE ARRAY
+LEA SI,arr2
+MOV CX,arrSize
+A1:MOV AH,01
+   INT 21H
+   CMP AL,'A'
+   JGE A2
+   SUB AL,30H
+   JMP A3
+   A2:SUB AL,37H
+   A3:MOV [SI],AL
+   INC SI
+   MOV AH,02
+   MOV DL,' '
+   INT 21H
+   LOOP A1
+
+   ;DISPLAY RESULT MESSAGE
+   MOV AH,09
+   LEA DX,msg4
+   INT 21H
+
+   ;SUBTRACT SECOND ARRAY FROM FIRST 
+   LEA SI,arr1
+   LEA DI,arr2
+   MOV CX,arrSize
+   B1:MOV AL,[SI]
+      SUB AL,[DI]
+      MOV [SI],AL
+      INC SI
+      INC DI
+      MOV AH,02
+      MOV DL,' '
+      INT 21H
+    LOOP B1
+
+;PRINT SUBTRACTED ARRY
+LEA SI,arr1
+MOV CX,arrSize
+D1:MOV AL,[SI]
+ADD AL,30H
+MOV DL,AL
+MOV AH,02
+INT 21H
+MOV AH,02
+MOV DL,' '
+INT 21H
+LOOP D1
+
+MOV AH,4CH
+INT 21H
+
+MAIN ENDP
+END MAIN

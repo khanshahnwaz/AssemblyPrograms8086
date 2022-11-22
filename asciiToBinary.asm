@@ -1,0 +1,40 @@
+.MODEL SMALL
+.DATA
+msg1 DB 10,13,"Enter ascii number.$"
+msg2 DB 10,13,"Binary converion is: $"
+.code
+
+main proc
+mov ax,@DATA
+MOV DS,ax
+
+MOV AH,09
+LEA DX,msg1
+INT 21H
+
+MOV AH,01
+INT 21H
+MOV BL,AL
+
+MOV AH,09
+LEA DX,msg2
+INT 21H
+
+MOV AL,BL
+MOV CX,08
+L1:SHL AL,01
+  MOV BL,AL
+  MOV AL,00
+  ADC AL,30H
+  MOV DL,AL
+  MOV AH,02
+  INT 21H
+MOV AL,BL
+LOOP L1
+
+MOV AH,4CH
+INT 21H
+
+MAIN ENDP
+
+END MAIN
